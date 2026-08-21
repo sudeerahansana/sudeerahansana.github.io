@@ -178,6 +178,20 @@
   .receipt .r-head{text-align:center; border-bottom:1px dashed var(--ink-soft); padding-bottom:.8rem; margin-bottom:.9rem;}
   .receipt .r-head .r-eyebrow{font-size:.65rem; letter-spacing:.18em; color:var(--ink-soft); text-transform:uppercase;}
   .receipt .r-head h3{margin:.35rem 0 0; font-size:1.02rem; letter-spacing:.02em;}
+  .r-photos{display:flex; gap:.6rem; justify-content:center; margin-bottom:1rem;}
+  .r-photos img{
+    width:47%; aspect-ratio:4/3; object-fit:cover;
+    border:1px solid var(--paper-shadow); box-shadow:0 4px 10px -4px rgba(0,0,0,0.35);
+    filter:sepia(.12) contrast(1.02);
+  }
+  .r-photos img:first-child{transform:rotate(-2deg);}
+  .r-photos img:last-child{transform:rotate(2deg);}
+  .r-photos-4{flex-wrap:wrap;}
+  .r-photos-4 img{width:47%;}
+  .r-photos-4 img:nth-child(1){transform:rotate(-2deg);}
+  .r-photos-4 img:nth-child(2){transform:rotate(1.5deg);}
+  .r-photos-4 img:nth-child(3){transform:rotate(1deg);}
+  .r-photos-4 img:nth-child(4){transform:rotate(-1.5deg);}
   .receipt .r-desc{font-size:.78rem; line-height:1.6; color:#3a362b; margin:0 0 1rem;}
   .r-line{display:flex; justify-content:space-between; gap:1rem; font-size:.74rem; padding:.28rem 0; border-bottom:1px dotted var(--paper-shadow);}
   .r-line span:first-child{color:var(--ink-soft);}
@@ -230,8 +244,8 @@
       <div class="device-label"><span class="dot"></span> TERMINAL // ID 0x53 &mdash; PORTFOLIO BUILD</div>
       <div id="bootlog" class="mono"></div>
       <h1 class="hero-title" id="heroTitle">Sudeera</h1>
-      <p class="hero-role mono" id="heroRole">C++ Systems Engineer &mdash; building toward game engines</p>
-      <p class="hero-desc" id="heroDesc">Two years deep in POS terminals and EMV certification, freelance game dev on the side, and a multi-year plan to land on a game engine team. I like software with a hardware in mind &mdash; low-level, deterministic, and honest about its constraints.</p>
+      <p class="hero-role mono" id="heroRole">C++ Systems Engineer</p>
+      <p class="hero-desc" id="heroDesc">Two years deep in POS terminals and EMV certification, with a broader focus on C/C++, Java, Kotlin, Android apps, and Linux terminal programming. I like software with hardware in mind &mdash; low-level, deterministic, and honest about its constraints.</p>
       <div class="hero-cta" id="heroCta">
         <a href="#projects" class="btn primary">View projects</a>
         <a href="#contact" class="btn ghost">Get in touch</a>
@@ -246,9 +260,10 @@
       <div class="about-copy">
         <div class="eyebrow">// about</div>
         <p>I'm a backend and systems software engineer based in <strong>Colombo, Sri Lanka</strong>, currently at <strong>Ceylon Business Appliances</strong>, where my work spans EMV/payment terminal development, Unity plugin engineering, and backend systems built on Drogon and MySQL.</p>
-        <p>Alongside that I run a freelance practice on Fiverr covering game development and cross-platform software, and I'm steadily building toward a <strong>game engine developer</strong> role over the next few years &mdash; strengthening my C++ fundamentals, systems programming, and low-level graphics/engine knowledge along the way.</p>
+        <p>Alongside that I run a freelance practice on Fiverr covering game development and cross-platform software. My main interests are <strong>C/C++</strong>, <strong>Java</strong>, <strong>Kotlin</strong>, Android apps and games, and Linux terminal programming &mdash; and I'm working toward a <strong>software engineer</strong> role built on that foundation.</p>
       </div>
       <div class="status-list mono">
+        <div class="status-row"><span class="label">C</span><span class="state up"><span class="led"></span>ONLINE</span></div>
         <div class="status-row"><span class="label">C++17 / C++20, STL</span><span class="state up"><span class="led"></span>ONLINE</span></div>
         <div class="status-row"><span class="label">Multithreading &amp; smart pointers</span><span class="state up"><span class="led"></span>ONLINE</span></div>
         <div class="status-row"><span class="label">CMake / Android NDK</span><span class="state up"><span class="led"></span>ONLINE</span></div>
@@ -265,16 +280,16 @@
     <div class="projects-inner">
       <div class="projects-head">
         <h2>// printed_projects</h2>
-        <span class="count">4 receipts on file</span>
+        <span class="count">6 receipts on file</span>
       </div>
       <div class="receipt-grid">
 
         <div class="receipt">
           <div class="r-head">
-            <div class="r-eyebrow">Unity Asset Store &middot; Plugin</div>
+            <div class="r-eyebrow">Freelance &middot; Fiverr</div>
             <h3>WebSocketPro</h3>
           </div>
-          <p class="r-desc">A C++ plugin wrapping IXWebSocket for Unity, with a full cross-platform CMake build pipeline and a native bridge layer for interop.</p>
+          <p class="r-desc">A C++ plugin wrapping IXWebSocket for Unity, built as Fiverr client work &mdash; full cross-platform CMake build pipeline and a native bridge layer for interop.</p>
           <div class="r-line"><span>Targets</span><span>Android / Windows / Apple</span></div>
           <div class="r-line"><span>Build</span><span>CMake + VS test harness</span></div>
           <div class="r-line"><span>Fixed</span><span>TLS &amp; zlib config</span></div>
@@ -285,29 +300,35 @@
 
         <div class="receipt">
           <div class="r-head">
-            <div class="r-eyebrow">Unity &middot; Co-op Game</div>
-            <h3>Jack N' Beanstalk</h3>
+            <div class="r-eyebrow">Unity Asset Store</div>
+            <h3>Asset Store Listing</h3>
           </div>
-          <p class="r-desc">A co-op multiplayer game built with a two-person team, inspired by PEAK, with server-authoritative gameplay and a data-driven stats system.</p>
-          <div class="r-line"><span>Networking</span><span>Mirror</span></div>
-          <div class="r-line"><span>Systems</span><span>Physics character controller</span></div>
-          <div class="r-line"><span>Enemy AI</span><span>Server-authoritative</span></div>
-          <div class="r-line"><span>Team size</span><span>2</span></div>
-          <div class="r-total"><span>STATUS</span><span>IN PROGRESS</span></div>
+          <div class="r-photos r-photos-4">
+            <img src="https://placehold.co/300x225/f2ede0/8a8367?text=Image+1" alt="Add asset screenshot 1">
+            <img src="https://placehold.co/300x225/f2ede0/8a8367?text=Image+2" alt="Add asset screenshot 2">
+            <img src="https://placehold.co/300x225/f2ede0/8a8367?text=Image+3" alt="Add asset screenshot 3">
+            <img src="https://placehold.co/300x225/f2ede0/8a8367?text=Image+4" alt="Add asset screenshot 4">
+          </div>
+          <p class="r-desc">[Replace with a short description of the asset.]</p>
+          <div class="r-line"><span>Store link</span><span>[add URL]</span></div>
+          <div class="r-total"><span>STATUS</span><span>LISTED</span></div>
           <div class="barcode"></div>
         </div>
 
         <div class="receipt">
           <div class="r-head">
-            <div class="r-eyebrow">C++ Backend</div>
-            <h3>Txn Tracker</h3>
+            <div class="r-eyebrow">Google Play &middot; Published Apps</div>
+            <h3>Mobile Games</h3>
           </div>
-          <p class="r-desc">A Drogon-based transaction tracking backend that syncs data from payment devices, built as a deep-dive into async request handling.</p>
-          <div class="r-line"><span>Framework</span><span>Drogon (C++)</span></div>
-          <div class="r-line"><span>Store</span><span>MySQL</span></div>
-          <div class="r-line"><span>Focus</span><span>Async DB pooling</span></div>
-          <div class="r-line"><span>Type</span><span>Learning + portfolio piece</span></div>
-          <div class="r-total"><span>STATUS</span><span>IN PROGRESS</span></div>
+          <div class="r-photos">
+            <img src="https://bnb-creations.web.app/images/carrom.png" alt="Carrom Multiplayer screenshot">
+            <img src="https://bnb-creations.web.app/images/puzzle-hub.png" alt="Puzzle Hub screenshot">
+          </div>
+          <p class="r-desc">Carrom Multiplayer, a real-time 3D board game with in-game chat, and Puzzle Hub, a sliding puzzle game &mdash; both built and published to Google Play.</p>
+          <div class="r-line"><span>Engine</span><span>Unity3D</span></div>
+          <div class="r-line"><span>Carrom Multiplayer</span><span>Real-time multiplayer + chat</span></div>
+          <div class="r-line"><span>Puzzle Hub</span><span>Sliding puzzle, multiple modes</span></div>
+          <div class="r-total"><span>STATUS</span><span>PUBLISHED</span></div>
           <div class="barcode"></div>
         </div>
 
@@ -320,7 +341,21 @@
           <div class="r-line"><span>Framework</span><span>Qt / Qt Creator</span></div>
           <div class="r-line"><span>SDK</span><span>Prolin SDK</span></div>
           <div class="r-line"><span>Protocol</span><span>XCB</span></div>
+          <div class="r-line"><span>Extra</span><span>Package install support</span></div>
           <div class="r-line"><span>Modeled after</span><span>Android DDMS</span></div>
+          <div class="r-total"><span>STATUS</span><span>SHIPPED</span></div>
+          <div class="barcode"></div>
+        </div>
+
+        <div class="receipt">
+          <div class="r-head">
+            <div class="r-eyebrow">Desktop Tool</div>
+            <h3>D188 Log Viewer</h3>
+          </div>
+          <p class="r-desc">A serial log reader for PAX D188 (and Q80) terminals &mdash; reads logs over the serial port, parses them, and displays them in real time for on-device debugging.</p>
+          <div class="r-line"><span>Devices</span><span>PAX D188, Q80</span></div>
+          <div class="r-line"><span>Input</span><span>Serial port</span></div>
+          <div class="r-line"><span>Function</span><span>Read, parse, display</span></div>
           <div class="r-total"><span>STATUS</span><span>SHIPPED</span></div>
           <div class="barcode"></div>
         </div>
@@ -339,7 +374,7 @@
       </div>
       <div class="log-entry">
         <span class="ts">CERT</span>
-        <span class="msg">EMV certification testing for <strong>Dialog</strong> and <strong>HNB</strong> terminals against Amex AEIPS/Expresspay specs using BTT &mdash; diagnosed and resolved CT-EMV012 (floor limit / ARQC) and CTL-EP001 (tag 9F27 forwarding) failures.</span>
+        <span class="msg">EMV certification work on the <strong>Android</strong> payment app and the <strong>PAX D188</strong> payment app, validated against Amex AEIPS/Expresspay specifications using BTT &mdash; covering contact and contactless (CTL) transaction flows.</span>
       </div>
       <div class="log-entry">
         <span class="ts">ONGOING</span>
@@ -347,7 +382,7 @@
       </div>
       <div class="log-entry">
         <span class="ts">GOAL</span>
-        <span class="msg">3&ndash;5 year track toward a <strong>game engine developer</strong> role, building on a strong C background and current C++ systems work.</span>
+        <span class="msg">Working toward a <strong>software engineer</strong> role, built on C/C++, Java, Kotlin, Android, and Linux terminal programming.</span>
       </div>
     </div>
   </section>
@@ -356,7 +391,7 @@
   <section class="contact" id="contact">
     <div class="eyebrow mono">// contact</div>
     <h2>Let's build something that has to run right the first time.</h2>
-    <p>Open to conversations about systems programming, game engine work, or backend/embedded projects.</p>
+    <p>Open to conversations about systems programming, Android development, or backend/embedded projects.</p>
     <div class="contact-links">
       <a href="mailto:your.email@example.com" class="btn primary">Email me</a>
       <a href="https://github.com/your-username" class="btn ghost">GitHub</a>
@@ -374,7 +409,7 @@ const bootLines = [
   {t:"> loading profile: sudeera.dev", cls:"ok"},
   {t:"> checking certifications... EMV AEIPS/Expresspay ", cls:"ok", suffix:"OK"},
   {t:"> mounting skills: C++17/20, Unity, Drogon, Qt ", cls:"ok", suffix:"OK"},
-  {t:"> target role: game_engine_developer.exe ", cls:"amber", suffix:"PENDING"},
+  {t:"> target role: software_engineer.exe ", cls:"amber", suffix:"PENDING"},
   {t:"> ready.", cls:"ok"}
 ];
 
