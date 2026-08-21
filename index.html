@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sudeera — Systems / C++ Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bezel:#0b0e0c;
+    --screen:#10160f;
+    --screen-edge:#1c2419;
+    --phosphor:#7CFF9E;
+    --phosphor-dim:#3f8a55;
+    --amber:#ffb020;
+    --paper:#f2ede0;
+    --paper-shadow:#d9d2bf;
+    --ink:#221f18;
+    --ink-soft:#5a5648;
+    --line:rgba(124,255,158,0.18);
+    --radius-s:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bezel);
+    color:var(--phosphor);
+    font-family:'IBM Plex Sans',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+  a{color:inherit;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- shared scanline / crt texture ---------- */
+  .crt::before{
+    content:"";
+    position:absolute; inset:0;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0.10) 3px
+    );
+    pointer-events:none;
+    mix-blend-mode:multiply;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    background:radial-gradient(ellipse at 50% -10%, var(--screen-edge), var(--screen) 60%);
+    border-bottom:1px solid var(--line);
+    display:flex; flex-direction:column; justify-content:center;
+    padding:8vh 6vw 10vh;
+    overflow:hidden;
+  }
+  .hero-inner{max-width:760px; margin:0 auto; width:100%;}
+  .device-label{
+    font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--phosphor-dim); margin-bottom:2.2rem; display:flex; gap:.6em; align-items:center;
+  }
+  .device-label .dot{width:6px;height:6px;border-radius:50%;background:var(--phosphor);box-shadow:0 0 8px var(--phosphor); animation:blink 1.6s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
+
+  #bootlog{font-size:13px; line-height:1.85; color:var(--phosphor-dim); min-height:11.5em;}
+  #bootlog .line{opacity:0;}
+  #bootlog .ok{color:var(--phosphor);}
+  #bootlog .amber{color:var(--amber);}
+
+  .hero-title{
+    margin:1.6rem 0 .4rem;
+    font-size:clamp(2.4rem, 6vw, 4.2rem);
+    line-height:1.02;
+    color:var(--phosphor);
+    text-shadow:0 0 18px rgba(124,255,158,0.35);
+    opacity:0; transform:translateY(6px);
+  }
+  .hero-role{
+    font-size:clamp(1rem, 2vw, 1.25rem);
+    color:var(--amber);
+    margin:0 0 1.4rem;
+    opacity:0;
+  }
+  .hero-desc{
+    max-width:52ch; color:#c9d6ca; font-size:.98rem; line-height:1.7;
+    opacity:0;
+  }
+  .hero-cta{margin-top:2.4rem; display:flex; gap:1rem; flex-wrap:wrap; opacity:0;}
+  .btn{
+    font-family:'IBM Plex Mono',monospace; font-size:.82rem; letter-spacing:.05em;
+    padding:.85em 1.4em; border-radius:var(--radius-s); text-decoration:none;
+    border:1px solid var(--phosphor-dim); transition:all .2s ease;
+  }
+  .btn.primary{background:var(--phosphor); color:#0b120c; border-color:var(--phosphor); font-weight:600;}
+  .btn.primary:hover{background:var(--amber); border-color:var(--amber);}
+  .btn.ghost{color:var(--phosphor); }
+  .btn.ghost:hover{border-color:var(--phosphor); background:rgba(124,255,158,0.08);}
+
+  .scroll-cue{
+    position:absolute; bottom:2.4rem; left:50%; transform:translateX(-50%);
+    font-size:10px; letter-spacing:.2em; color:var(--phosphor-dim); text-transform:uppercase;
+    opacity:0; animation:fadeIn 1s ease forwards 3.4s;
+  }
+  .scroll-cue span{display:block; text-align:center; margin-top:.5em; animation:bob 1.8s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(5px);}}
+  @keyframes fadeIn{to{opacity:1;}}
+
+  /* ---------- STATUS / ABOUT PANEL ---------- */
+  .panel{
+    background:var(--screen);
+    border-bottom:1px solid var(--line);
+    padding:5rem 6vw;
+  }
+  .panel-inner{max-width:1040px; margin:0 auto;}
+  .eyebrow{
+    font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--phosphor-dim);
+    margin-bottom:1rem;
+  }
+  .about-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:3.5rem; align-items:start;}
+  @media (max-width:800px){.about-grid{grid-template-columns:1fr;}}
+  .about-copy p{color:#c9d6ca; line-height:1.8; font-size:1rem; margin:0 0 1.2rem;}
+  .about-copy strong{color:var(--phosphor); font-weight:600;}
+
+  .status-list{border:1px solid var(--line); border-radius:var(--radius-s);}
+  .status-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:.9rem 1.1rem; border-bottom:1px solid var(--line);
+    font-family:'IBM Plex Mono',monospace; font-size:.82rem;
+  }
+  .status-row:last-child{border-bottom:none;}
+  .status-row .label{color:#c9d6ca;}
+  .status-row .state{color:var(--phosphor-dim); display:flex; align-items:center; gap:.5em;}
+  .status-row .state.up{color:var(--phosphor);}
+  .state .led{width:6px;height:6px;border-radius:50%;background:currentColor; box-shadow:0 0 6px currentColor;}
+
+  /* ---------- PROJECTS (receipts) ---------- */
+  .projects{
+    background:var(--bezel);
+    padding:5.5rem 6vw 6rem;
+  }
+  .projects-inner{max-width:1080px; margin:0 auto;}
+  .projects-head{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2.8rem; flex-wrap:wrap; gap:1rem;}
+  .projects-head h2{
+    font-family:'IBM Plex Mono',monospace; color:var(--phosphor); font-size:1.5rem; margin:0; font-weight:600;
+  }
+  .projects-head .count{font-family:'IBM Plex Mono',monospace; font-size:.8rem; color:var(--phosphor-dim);}
+
+  .receipt-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:2.2rem;
+  }
+  .receipt{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Mono',monospace;
+    padding:1.7rem 1.5rem 1.9rem;
+    position:relative;
+    box-shadow:0 14px 30px -14px rgba(0,0,0,0.55);
+    transform:rotate(var(--tilt,0deg));
+    transition:transform .25s ease, box-shadow .25s ease;
+    clip-path:polygon(
+      0% 0%, 100% 0%, 100% 97%,
+      95% 100%, 90% 97%, 85% 100%, 80% 97%, 75% 100%, 70% 97%, 65% 100%,
+      60% 97%, 55% 100%, 50% 97%, 45% 100%, 40% 97%, 35% 100%, 30% 97%,
+      25% 100%, 20% 97%, 15% 100%, 10% 97%, 5% 100%, 0% 97%
+    );
+  }
+  .receipt:nth-child(odd){--tilt:-0.6deg;}
+  .receipt:nth-child(even){--tilt:0.5deg;}
+  .receipt:hover{transform:rotate(0deg) translateY(-4px); box-shadow:0 20px 36px -14px rgba(0,0,0,0.6);}
+  .receipt .r-head{text-align:center; border-bottom:1px dashed var(--ink-soft); padding-bottom:.8rem; margin-bottom:.9rem;}
+  .receipt .r-head .r-eyebrow{font-size:.65rem; letter-spacing:.18em; color:var(--ink-soft); text-transform:uppercase;}
+  .receipt .r-head h3{margin:.35rem 0 0; font-size:1.02rem; letter-spacing:.02em;}
+  .receipt .r-desc{font-size:.78rem; line-height:1.6; color:#3a362b; margin:0 0 1rem;}
+  .r-line{display:flex; justify-content:space-between; gap:1rem; font-size:.74rem; padding:.28rem 0; border-bottom:1px dotted var(--paper-shadow);}
+  .r-line span:first-child{color:var(--ink-soft);}
+  .r-line span:last-child{color:var(--ink); text-align:right;}
+  .r-total{display:flex; justify-content:space-between; margin-top:1rem; padding-top:.7rem; border-top:1px solid var(--ink); font-size:.8rem; font-weight:600;}
+  .barcode{margin-top:1.2rem; height:26px; background:repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 6px, transparent 6px 9px, var(--ink) 9px 10px, transparent 10px 14px); opacity:.85;}
+
+  /* ---------- EXPERIENCE LOG ---------- */
+  .log{
+    background:var(--screen);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:5.5rem 6vw;
+  }
+  .log-inner{max-width:820px; margin:0 auto;}
+  .log h2{font-family:'IBM Plex Mono',monospace; color:var(--phosphor); font-size:1.5rem; margin:0 0 2rem; font-weight:600;}
+  .log-entry{
+    font-family:'IBM Plex Mono',monospace; font-size:.85rem; line-height:1.9;
+    padding:1.1rem 0; border-bottom:1px solid var(--line); display:grid; grid-template-columns:120px 1fr; gap:1.2rem;
+  }
+  .log-entry:last-child{border-bottom:none;}
+  .log-entry .ts{color:var(--phosphor-dim); white-space:nowrap;}
+  .log-entry .msg{color:#c9d6ca;}
+  .log-entry .msg strong{color:var(--phosphor); font-weight:600;}
+  .log-entry .tag{color:var(--amber);}
+  @media (max-width:600px){.log-entry{grid-template-columns:1fr;}}
+
+  /* ---------- CONTACT ---------- */
+  .contact{
+    background:var(--bezel); padding:6rem 6vw 5rem; text-align:center;
+  }
+  .contact .eyebrow{justify-content:center; display:flex;}
+  .contact h2{
+    font-family:'IBM Plex Mono',monospace; color:var(--phosphor); font-size:clamp(1.6rem,4vw,2.4rem);
+    margin:.6rem 0 1.4rem;
+  }
+  .contact p{color:#c9d6ca; max-width:46ch; margin:0 auto 2.2rem; line-height:1.7;}
+  .contact-links{display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;}
+  footer{
+    text-align:center; padding:2rem; font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem; color:var(--phosphor-dim); background:var(--bezel); border-top:1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero crt">
+    <div class="hero-inner">
+      <div class="device-label"><span class="dot"></span> TERMINAL // ID 0x53 &mdash; PORTFOLIO BUILD</div>
+      <div id="bootlog" class="mono"></div>
+      <h1 class="hero-title" id="heroTitle">Sudeera</h1>
+      <p class="hero-role mono" id="heroRole">C++ Systems Engineer &mdash; building toward game engines</p>
+      <p class="hero-desc" id="heroDesc">Two years deep in POS terminals and EMV certification, freelance game dev on the side, and a multi-year plan to land on a game engine team. I like software with a hardware in mind &mdash; low-level, deterministic, and honest about its constraints.</p>
+      <div class="hero-cta" id="heroCta">
+        <a href="#projects" class="btn primary">View projects</a>
+        <a href="#contact" class="btn ghost">Get in touch</a>
+      </div>
+    </div>
+    <div class="scroll-cue mono">scroll<span>&darr;</span></div>
+  </section>
+
+  <!-- ABOUT / STATUS -->
+  <section class="panel">
+    <div class="panel-inner about-grid">
+      <div class="about-copy">
+        <div class="eyebrow">// about</div>
+        <p>I'm a backend and systems software engineer based in <strong>Colombo, Sri Lanka</strong>, currently at <strong>Ceylon Business Appliances</strong>, where my work spans EMV/payment terminal development, Unity plugin engineering, and backend systems built on Drogon and MySQL.</p>
+        <p>Alongside that I run a freelance practice on Fiverr covering game development and cross-platform software, and I'm steadily building toward a <strong>game engine developer</strong> role over the next few years &mdash; strengthening my C++ fundamentals, systems programming, and low-level graphics/engine knowledge along the way.</p>
+      </div>
+      <div class="status-list mono">
+        <div class="status-row"><span class="label">C++17 / C++20, STL</span><span class="state up"><span class="led"></span>ONLINE</span></div>
+        <div class="status-row"><span class="label">Multithreading &amp; smart pointers</span><span class="state up"><span class="led"></span>ONLINE</span></div>
+        <div class="status-row"><span class="label">CMake / Android NDK</span><span class="state up"><span class="led"></span>ONLINE</span></div>
+        <div class="status-row"><span class="label">Unity / C#</span><span class="state up"><span class="led"></span>ONLINE</span></div>
+        <div class="status-row"><span class="label">Qt</span><span class="state up"><span class="led"></span>ONLINE</span></div>
+        <div class="status-row"><span class="label">Drogon / MySQL</span><span class="state up"><span class="led"></span>ONLINE</span></div>
+        <div class="status-row"><span class="label">Java / Kotlin</span><span class="state up"><span class="led"></span>ONLINE</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="projects" id="projects">
+    <div class="projects-inner">
+      <div class="projects-head">
+        <h2>// printed_projects</h2>
+        <span class="count">4 receipts on file</span>
+      </div>
+      <div class="receipt-grid">
+
+        <div class="receipt">
+          <div class="r-head">
+            <div class="r-eyebrow">Unity Asset Store &middot; Plugin</div>
+            <h3>WebSocketPro</h3>
+          </div>
+          <p class="r-desc">A C++ plugin wrapping IXWebSocket for Unity, with a full cross-platform CMake build pipeline and a native bridge layer for interop.</p>
+          <div class="r-line"><span>Targets</span><span>Android / Windows / Apple</span></div>
+          <div class="r-line"><span>Build</span><span>CMake + VS test harness</span></div>
+          <div class="r-line"><span>Fixed</span><span>TLS &amp; zlib config</span></div>
+          <div class="r-line"><span>Benchmarked vs.</span><span>Mirror, Fusion 2, Netcode</span></div>
+          <div class="r-total"><span>STATUS</span><span>SHIPPED</span></div>
+          <div class="barcode"></div>
+        </div>
+
+        <div class="receipt">
+          <div class="r-head">
+            <div class="r-eyebrow">Unity &middot; Co-op Game</div>
+            <h3>Jack N' Beanstalk</h3>
+          </div>
+          <p class="r-desc">A co-op multiplayer game built with a two-person team, inspired by PEAK, with server-authoritative gameplay and a data-driven stats system.</p>
+          <div class="r-line"><span>Networking</span><span>Mirror</span></div>
+          <div class="r-line"><span>Systems</span><span>Physics character controller</span></div>
+          <div class="r-line"><span>Enemy AI</span><span>Server-authoritative</span></div>
+          <div class="r-line"><span>Team size</span><span>2</span></div>
+          <div class="r-total"><span>STATUS</span><span>IN PROGRESS</span></div>
+          <div class="barcode"></div>
+        </div>
+
+        <div class="receipt">
+          <div class="r-head">
+            <div class="r-eyebrow">C++ Backend</div>
+            <h3>Txn Tracker</h3>
+          </div>
+          <p class="r-desc">A Drogon-based transaction tracking backend that syncs data from payment devices, built as a deep-dive into async request handling.</p>
+          <div class="r-line"><span>Framework</span><span>Drogon (C++)</span></div>
+          <div class="r-line"><span>Store</span><span>MySQL</span></div>
+          <div class="r-line"><span>Focus</span><span>Async DB pooling</span></div>
+          <div class="r-line"><span>Type</span><span>Learning + portfolio piece</span></div>
+          <div class="r-total"><span>STATUS</span><span>IN PROGRESS</span></div>
+          <div class="barcode"></div>
+        </div>
+
+        <div class="receipt">
+          <div class="r-head">
+            <div class="r-eyebrow">Qt Desktop Tool</div>
+            <h3>PAX Q80 Log Viewer</h3>
+          </div>
+          <p class="r-desc">A Qt log viewer for PAX Q80 payment terminals, modeled after DDMS, for reading device logs over the Prolin SDK and XCB protocol.</p>
+          <div class="r-line"><span>Framework</span><span>Qt / Qt Creator</span></div>
+          <div class="r-line"><span>SDK</span><span>Prolin SDK</span></div>
+          <div class="r-line"><span>Protocol</span><span>XCB</span></div>
+          <div class="r-line"><span>Modeled after</span><span>Android DDMS</span></div>
+          <div class="r-total"><span>STATUS</span><span>SHIPPED</span></div>
+          <div class="barcode"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE LOG -->
+  <section class="log">
+    <div class="log-inner">
+      <h2>// experience_log</h2>
+      <div class="log-entry">
+        <span class="ts">2024&ndash;present</span>
+        <span class="msg"><strong>Ceylon Business Appliances</strong> &mdash; POS terminal development, EMV certification testing, embedded payment systems. <span class="tag">[2+ yrs]</span></span>
+      </div>
+      <div class="log-entry">
+        <span class="ts">CERT</span>
+        <span class="msg">EMV certification testing for <strong>Dialog</strong> and <strong>HNB</strong> terminals against Amex AEIPS/Expresspay specs using BTT &mdash; diagnosed and resolved CT-EMV012 (floor limit / ARQC) and CTL-EP001 (tag 9F27 forwarding) failures.</span>
+      </div>
+      <div class="log-entry">
+        <span class="ts">ONGOING</span>
+        <span class="msg">Freelance on <strong>Fiverr</strong> &mdash; game development and cross-platform software delivery.</span>
+      </div>
+      <div class="log-entry">
+        <span class="ts">GOAL</span>
+        <span class="msg">3&ndash;5 year track toward a <strong>game engine developer</strong> role, building on a strong C background and current C++ systems work.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="eyebrow mono">// contact</div>
+    <h2>Let's build something that has to run right the first time.</h2>
+    <p>Open to conversations about systems programming, game engine work, or backend/embedded projects.</p>
+    <div class="contact-links">
+      <a href="mailto:your.email@example.com" class="btn primary">Email me</a>
+      <a href="https://github.com/your-username" class="btn ghost">GitHub</a>
+      <a href="https://www.fiverr.com/your-profile" class="btn ghost">Fiverr</a>
+    </div>
+  </section>
+
+  <footer class="mono">© <span id="year"></span> Sudeera &middot; built on a slow Tuesday, deployed on GitHub Pages</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const bootLines = [
+  {t:"> initializing terminal...", cls:""},
+  {t:"> loading profile: sudeera.dev", cls:"ok"},
+  {t:"> checking certifications... EMV AEIPS/Expresspay ", cls:"ok", suffix:"OK"},
+  {t:"> mounting skills: C++17/20, Unity, Drogon, Qt ", cls:"ok", suffix:"OK"},
+  {t:"> target role: game_engine_developer.exe ", cls:"amber", suffix:"PENDING"},
+  {t:"> ready.", cls:"ok"}
+];
+
+const logEl = document.getElementById('bootlog');
+let delay = 150;
+bootLines.forEach((line, i) => {
+  const div = document.createElement('div');
+  div.className = 'line ' + (line.cls || '');
+  div.textContent = line.t + (line.suffix ? line.suffix : '');
+  logEl.appendChild(div);
+  setTimeout(() => {
+    div.style.transition = 'opacity .25s ease';
+    div.style.opacity = '1';
+  }, delay);
+  delay += 320;
+});
+
+const reveal = [
+  {id:'heroTitle', delay: delay + 100},
+  {id:'heroRole', delay: delay + 350},
+  {id:'heroDesc', delay: delay + 550},
+  {id:'heroCta', delay: delay + 750},
+];
+reveal.forEach(r => {
+  const el = document.getElementById(r.id);
+  setTimeout(() => {
+    el.style.transition = 'opacity .6s ease, transform .6s ease';
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+  }, r.delay);
+});
+</script>
+</body>
+</html>
